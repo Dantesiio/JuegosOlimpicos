@@ -1,17 +1,14 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 public class Main {
-    private static PaisList paisList = new PaisList();
+    private static ArrayList<Pais> paises = new ArrayList<>();
+    private static PaisList persistency;
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        load();
         int opcion;
-        try {
-            paisList.load();
-        } catch (Exception e) {
-            System.out.println("Error al cargar los datos.");
-        }
         do {
             System.out.println("----------MENU----------");
             System.out.println("1. Ingresar un país");
@@ -24,25 +21,22 @@ public class Main {
 
             switch (opcion) {
                 case 1:
-                    System.out.println("Ingresa un país con el formato (nombre::medalla::total) ");
+                    System.out.println("Ingresa un país con el formato (nombre::oro::plata:bronce) ");
                     ingresarPais(sc);
                     break;
                 case 2:
-                    Tabla.mostrarTablaConvencional(paisList.getPaises());
+                    Tabla.mostrarTablaConvencional(paises);
                     break;
                 case 3:
-                    Tabla.mostrarTablaTotal(paisList.getPaises());
+                    Tabla.mostrarTablaTotal(paises);
                     break;
                 case 4:
-                    paisList.show();
+                    Tabla.mostrarPaises(paises);
                     break;
+
                 case 0:
-                    try {
-                        paisList.save();
-                    } catch (Exception e) {
-                        System.out.println("Error al guardar los datos.");
-                    }
                     System.out.println("Saliendo del programa...");
+                    save();
                     break;
                 default:
                     System.out.println("Opción inválida");
@@ -50,8 +44,6 @@ public class Main {
             }
         } while (opcion != 0);
     }
-
-
     /**
      * Este método recibe una instancia de la clase Scanner como argumento para leer la entrada del usuario.
      * Lee una medalla ingresada por el usuario y la agrega a la lista de medallas del país correspondiente o crea un nuevo país si no existe.
@@ -68,7 +60,7 @@ public class Main {
 
         // Busca el país correspondiente en la lista de países
         boolean encontrado = false;
-        for (Pais pais : paisList.getPaises()) {
+        for (Pais pais : paises) {
             if (pais.getNombre().equals(nombre)) {
                 encontrado = true;
                 // Añade la cantidad de medallas correspondiente
@@ -83,7 +75,6 @@ public class Main {
             }
         }
 
-
         // Si no se encontró el país, crea una nueva instancia de la clase Pais y la agrega a la lista de países
         if (!encontrado) {
             Pais nuevoPais = new Pais(nombre, 0, 0, 0);
@@ -94,7 +85,28 @@ public class Main {
             } else if (tipoMedalla.equals("bronce")) {
                 nuevoPais.sumarBronce(cantidad);
             }
-            paisList.getPaises().add(nuevoPais);
+            paises.add(nuevoPais);
         }
     }
+
+    public static void load(){
+        try {
+            persistency = new PaisList(paises);
+            persistency.load();
+            paises = persistency.getPaises();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void save(){
+        persistency = new PaisList(paises);
+        try{
+            persistency.save();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }

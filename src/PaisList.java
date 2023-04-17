@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PaisList {
 
@@ -9,8 +8,8 @@ public class PaisList {
 
     ArrayList<Pais> paises;
 
-    public PaisList() {
-        paises = new ArrayList<>();
+    public PaisList(ArrayList<Pais> paises) {
+        this.paises = paises;
     }
 
     public ArrayList<Pais> getPaises() {
@@ -42,12 +41,9 @@ public class PaisList {
             String content = "";
             String line = "";
             while ((line = reader.readLine()) != null) {
-
-                System.out.println(line);
                 String[] arr = line.split(":");
-                System.out.println(Arrays.toString(arr));
                 paises.add(
-                        new Pais(arr[0], arr[1], Integer.parseInt(arr[2]))
+                        new Pais(arr[0], Integer.parseInt(arr[1]), Integer.parseInt(arr[2]), Integer.parseInt(arr[3]))
                 );
                 content += line + "\n";
             }

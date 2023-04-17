@@ -13,9 +13,7 @@ public class Pais implements Comparable<Pais> {
         this.bronce = bronce;
     }
 
-    public Pais(String s, String s1, int i) {
-        paises = new ArrayList<Pais>();
-    }
+
 
     private ArrayList<Pais> paises;
 
